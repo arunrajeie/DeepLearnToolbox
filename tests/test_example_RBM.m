@@ -3,8 +3,8 @@ load mnist_uint8;
 
 train_x = double(train_x) / 255;
 test_x  = double(test_x)  / 255;
-train_y = double(train_y);
-test_y  = double(test_y);
+train_x = double(train_x > 1e-3);       % True Binary
+test_x  = double(test_x  > 1e-3);
 
 %%  ex1 train a 100 hidden unit RBM and visualize its weights
 rand('state',0)
