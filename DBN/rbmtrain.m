@@ -9,6 +9,14 @@ function rbm = rbmtrain(rbm, x, opts)
     for i = 1 : opts.numepochs
         kk = randperm(m);
         err = 0;
+
+        %%% Momentum Transitioning
+        if i < rbm.momentum_change_epoch
+            rbm.momentum = rbm.momentum_initial;
+        else
+            rbm.momentum = rbm.momentum_final;
+        end
+
         for l = 1 : numbatches
             batch = x(kk((l - 1) * opts.batchsize + 1 : l * opts.batchsize), :);
             
