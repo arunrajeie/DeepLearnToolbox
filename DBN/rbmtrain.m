@@ -35,7 +35,7 @@ function rbm = rbmtrain(rbm, x, opts)
             switch rbm.weight_decay
                 case 'l2'
                     vW_pen = rbm.weight_cost .* rbm.W;
-                    rbm.vW = rbm.momentum * rbm.vW + rbm.alpha * (c1 - c2) + rbm.alpha * (vW_pen)     / opts.batchsize;
+                    rbm.vW = rbm.momentum * rbm.vW + rbm.alpha * (c1 - c2) - rbm.alpha * (vW_pen)     / opts.batchsize;
                 case 'l1'
                     vW_pen = rbm.weight_cost .* sign(rbm.W);
                     rbm.vW = rbm.momentum * rbm.vW + rbm.alpha * (c1 - c2) + rbm.alpha * (vW_pen)     / opts.batchsize;
@@ -53,7 +53,6 @@ function rbm = rbmtrain(rbm, x, opts)
             err = err + sum(sum((v1 - v2) .^ 2)) / opts.batchsize;
         end
         
-        disp(['epoch ' num2str(i) '/' num2str(opts.numepochs)  '. Average reconstruction error is: ' num2str(err / numbatches)]);
-        
+        fprintf('[%d/%d] rec. err. : %0.3f | W range : %0.3e\n',i,opts.numepochs,err./numbatches,max(rbm.W(:))-min(rbm.W(:)));                
     end
 end
