@@ -32,7 +32,7 @@ function dbn = dbnsetup(dbn, x, opts)
             % If this is the "lower" biasing for a deeper layer of the
             % stacked RBM, then we should intialize the bias on this 
             % hidden layer to zero.
-            dbn.rbm{u}.b = zeros(dbn.size(u), 1);
+            dbn.rbm{u}.b = zeros(dbn.sizes(u), 1);
         end
         dbn.rbm{u}.vb = zeros(dbn.sizes(u), 1);
 
