@@ -20,7 +20,21 @@ function rbm = rbmtrain(rbm, x, opts)
             c1 = h1' * v1;
             c2 = h2' * v2;
 
-            rbm.vW = rbm.momentum * rbm.vW + rbm.alpha * (c1 - c2)     / opts.batchsize;
+            %%% Support for Weight Decay
+            % According to Hinton's Handbook on training RBM, it is useful to add
+            % some kind of weight decay, that is, to regularize the value of the
+            % weights according to an $\ell_1$ or $\ell_2$ penalty.
+            switch rbm.weight_decay
+                case 'l2'
+                    vW_pen = rbm.weight_cost .* rbm.W;
+                    rbm.vW = rbm.momentum * rbm.vW + rbm.alpha * (c1 - c2) + rbm.alpha * (vW_pen)     / opts.batchsize;
+                case 'l1'
+                    vW_pen = rbm.weight_cost .* sign(rbm.W);
+                    rbm.vW = rbm.momentum * rbm.vW + rbm.alpha * (c1 - c2) + rbm.alpha * (vW_pen)     / opts.batchsize;
+                case 'none'
+                    rbm.vW = rbm.momentum * rbm.vW + rbm.alpha * (c1 - c2)     / opts.batchsize;
+            end            
+
             rbm.vb = rbm.momentum * rbm.vb + rbm.alpha * sum(v1 - v2)' / opts.batchsize;
             rbm.vc = rbm.momentum * rbm.vc + rbm.alpha * sum(h1 - h2)' / opts.batchsize;
 
