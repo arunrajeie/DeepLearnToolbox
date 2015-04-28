@@ -11,7 +11,7 @@ rand('state',0)
 dbn.sizes = [500];
 opts.numepochs =   30;
 opts.weight_decay = 'l2';
-opts.weight_cost = 0.001;
+opts.weight_cost = 0.1;
 opts.batchsize = 100;
 opts.momentum_initial = 0.5;
 opts.momentum_final = 0.9;
