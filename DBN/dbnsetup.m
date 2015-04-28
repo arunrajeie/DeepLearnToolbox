@@ -5,6 +5,10 @@ function dbn = dbnsetup(dbn, x, opts)
     for u = 1 : numel(dbn.sizes) - 1
         dbn.rbm{u}.alpha    = opts.alpha;
 
+        %%% Support for Weight Decay
+        dbn.rbm{u}.weight_decay = 'l2';
+        dbn.rbm{u}.weight_cost  = 0.0001;
+
         %%% Momentum Transitioning
         % From Hinton's Handbook, it is suggested that one should start
         % with an initial momemntum level, perhaps at around 0.5 or so,
