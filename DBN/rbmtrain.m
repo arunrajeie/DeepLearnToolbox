@@ -55,6 +55,10 @@ function rbm = rbmtrain(rbm, x, opts)
         
         fprintf('[%d/%d] rec. err. : %0.3f | W range : %0.3e\n',i,opts.numepochs,err./numbatches,max(rbm.W(:))-min(rbm.W(:)));                
 
+        %%% Visualization features
+        % After each epoch, display the learned receptive fields as well
+        % as the per-epoch estimation of the reconstruction error on the
+        % training set.
         if opts.visualize
             figure(1);
             subplot(1,2,1);
@@ -70,5 +74,10 @@ function rbm = rbmtrain(rbm, x, opts)
             grid on;
             drawnow;
         end
+
+        %%% Governance Embedding
+        % Make sure that we track important variables within the
+        % RBM data-structure in case it needs to be reviewed later
+        rbm.completed_epochs = rbm.completed_epochs + 1;
     end
 end

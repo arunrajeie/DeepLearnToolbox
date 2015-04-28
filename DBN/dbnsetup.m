@@ -4,6 +4,7 @@ function dbn = dbnsetup(dbn, x, opts)
 
     for u = 1 : numel(dbn.sizes) - 1
         dbn.rbm{u}.alpha    = opts.alpha;
+        dbn.rbm{u}.completed_epochs = 0;
 
         %%% Support for Weight Decay
         dbn.rbm{u}.weight_decay = opts.weight_decay;
