@@ -38,11 +38,11 @@ function rbm = rbmtrain(rbm, x, opts)
             % weights according to an $\ell_1$ or $\ell_2$ penalty.
             switch rbm.weight_decay
                 case 'l2'
-                    vW_pen = -rbm.weight_cost .* rbm.W;
-                    rbm.W = rbm.W + rbm.vW + rbm.alpha.*vW_pen;        
+                    vW_pen = rbm.weight_cost .* rbm.W;
+                    rbm.W = rbm.W + rbm.vW - rbm.alpha.*vW_pen;        
                 case 'l1'
-                    vW_pen = -rbm.weight_cost .* sign(rbm.W);
-                    rbm.W = rbm.W + rbm.vW + rbm.alpha.*vW_pen;        
+                    vW_pen = rbm.weight_cost .* sign(rbm.W);
+                    rbm.W = rbm.W + rbm.vW - rbm.alpha.*vW_pen;        
                 case 'none'
                     rbm.W = rbm.W + rbm.vW;        
             end            
@@ -54,5 +54,21 @@ function rbm = rbmtrain(rbm, x, opts)
         end
         
         fprintf('[%d/%d] rec. err. : %0.3f | W range : %0.3e\n',i,opts.numepochs,err./numbatches,max(rbm.W(:))-min(rbm.W(:)));                
+
+        if opts.visualize
+            figure(1);
+            subplot(1,2,1);
+                visualize(rbm.W');
+                colorbar();
+                axis square;
+            subplot(1,2,2);
+            hold on;
+                scatter(i,err./numbatches,'ro');
+            hold off;
+            axis square;
+            box on;
+            grid on;
+            drawnow;
+        end
     end
 end
