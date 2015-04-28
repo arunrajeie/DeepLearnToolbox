@@ -10,11 +10,13 @@ test_y  = double(test_y);
 rand('state',0)
 dbn.sizes = [100];
 opts.numepochs =   10;
+opts.weight_decay = 'l2';
+opts.weight_cost = 0.01;
 opts.batchsize = 100;
 opts.momentum_initial = 0.5;
 opts.momentum_final = 0.9;
 opts.momentum_change_epoch = 20;
-opts.alpha     =   1;
+opts.alpha     =   0.0005;
 dbn = dbnsetup(dbn, train_x, opts);
 dbn = dbntrain(dbn, train_x, opts);
 figure; visualize(dbn.rbm{1}.W');   %  Visualize the RBM weights
@@ -24,11 +26,13 @@ rand('state',0)
 %train dbn
 dbn.sizes = [100 100];
 opts.numepochs =   10;
+opts.weight_decay = 'l2';
+opts.weight_cost = 0.01;
 opts.batchsize = 100;
 opts.momentum_initial = 0.5;
 opts.momentum_final = 0.9;
 opts.momentum_change_epoch = 20;
-opts.alpha     =   1;
+opts.alpha     =   0.0005;
 dbn = dbnsetup(dbn, train_x, opts);
 dbn = dbntrain(dbn, train_x, opts);
 

@@ -6,8 +6,8 @@ function dbn = dbnsetup(dbn, x, opts)
         dbn.rbm{u}.alpha    = opts.alpha;
 
         %%% Support for Weight Decay
-        dbn.rbm{u}.weight_decay = 'l2';
-        dbn.rbm{u}.weight_cost  = 0.0001;
+        dbn.rbm{u}.weight_decay = opts.weight_decay;
+        dbn.rbm{u}.weight_cost  = opts.weight_cost;
 
         %%% Momentum Transitioning
         % From Hinton's Handbook, it is suggested that one should start
