@@ -9,10 +9,14 @@ test_y  = double(test_y);
 %%  ex1 train a 100 hidden unit RBM and visualize its weights
 rand('state',0)
 dbn.sizes = [100];
-opts.numepochs =   1;
+opts.numepochs =   10;
+opts.weight_decay = 'l2';
+opts.weight_cost = 0.01;
 opts.batchsize = 100;
-opts.momentum  =   0;
-opts.alpha     =   1;
+opts.momentum_initial = 0.5;
+opts.momentum_final = 0.9;
+opts.momentum_change_epoch = 20;
+opts.alpha     =   0.0005;
 dbn = dbnsetup(dbn, train_x, opts);
 dbn = dbntrain(dbn, train_x, opts);
 figure; visualize(dbn.rbm{1}.W');   %  Visualize the RBM weights
@@ -21,10 +25,14 @@ figure; visualize(dbn.rbm{1}.W');   %  Visualize the RBM weights
 rand('state',0)
 %train dbn
 dbn.sizes = [100 100];
-opts.numepochs =   1;
+opts.numepochs =   10;
+opts.weight_decay = 'l2';
+opts.weight_cost = 0.01;
 opts.batchsize = 100;
-opts.momentum  =   0;
-opts.alpha     =   1;
+opts.momentum_initial = 0.5;
+opts.momentum_final = 0.9;
+opts.momentum_change_epoch = 20;
+opts.alpha     =   0.0005;
 dbn = dbnsetup(dbn, train_x, opts);
 dbn = dbntrain(dbn, train_x, opts);
 

@@ -9,6 +9,14 @@ function rbm = rbmtrain(rbm, x, opts)
     for i = 1 : opts.numepochs
         kk = randperm(m);
         err = 0;
+
+        %%% Momentum Transitioning
+        if i < rbm.momentum_change_epoch
+            rbm.momentum = rbm.momentum_initial;
+        else
+            rbm.momentum = rbm.momentum_final;
+        end
+
         for l = 1 : numbatches
             batch = x(kk((l - 1) * opts.batchsize + 1 : l * opts.batchsize), :);
             
@@ -24,14 +32,52 @@ function rbm = rbmtrain(rbm, x, opts)
             rbm.vb = rbm.momentum * rbm.vb + rbm.alpha * sum(v1 - v2)' / opts.batchsize;
             rbm.vc = rbm.momentum * rbm.vc + rbm.alpha * sum(h1 - h2)' / opts.batchsize;
 
-            rbm.W = rbm.W + rbm.vW;
+            %%% Support for Weight Decay
+            % According to Hinton's Handbook on training RBM, it is useful to add
+            % some kind of weight decay, that is, to regularize the value of the
+            % weights according to an $\ell_1$ or $\ell_2$ penalty.
+            switch rbm.weight_decay
+                case 'l2'
+                    vW_pen = rbm.weight_cost .* rbm.W;
+                    rbm.W = rbm.W + rbm.vW - rbm.alpha.*vW_pen;        
+                case 'l1'
+                    vW_pen = rbm.weight_cost .* sign(rbm.W);
+                    rbm.W = rbm.W + rbm.vW - rbm.alpha.*vW_pen;        
+                case 'none'
+                    rbm.W = rbm.W + rbm.vW;        
+            end            
+            
             rbm.b = rbm.b + rbm.vb;
             rbm.c = rbm.c + rbm.vc;
 
             err = err + sum(sum((v1 - v2) .^ 2)) / opts.batchsize;
         end
         
-        disp(['epoch ' num2str(i) '/' num2str(opts.numepochs)  '. Average reconstruction error is: ' num2str(err / numbatches)]);
-        
+        fprintf('[%d/%d] rec. err. : %0.3f | W range : %0.3e\n',i,opts.numepochs,err./numbatches,max(rbm.W(:))-min(rbm.W(:)));                
+
+        %%% Visualization features
+        % After each epoch, display the learned receptive fields as well
+        % as the per-epoch estimation of the reconstruction error on the
+        % training set.
+        if opts.visualize
+            figure(1);
+            subplot(1,2,1);
+                visualize(rbm.W');
+                colorbar();
+                axis square;
+            subplot(1,2,2);
+            hold on;
+                scatter(i,err./numbatches,'bx');
+            hold off;
+            axis square;
+            box on;
+            grid on;
+            drawnow;
+        end
+
+        %%% Governance Embedding
+        % Make sure that we track important variables within the
+        % RBM data-structure in case it needs to be reviewed later
+        rbm.completed_epochs = rbm.completed_epochs + 1;
     end
 end
