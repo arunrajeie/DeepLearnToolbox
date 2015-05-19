@@ -67,7 +67,7 @@ function rbm = rbmtrain(rbm, x, opts)
                 axis square;
             subplot(1,2,2);
             hold on;
-                scatter(i,err./numbatches,'ro');
+                scatter(i,err./numbatches,'bx');
             hold off;
             axis square;
             box on;
